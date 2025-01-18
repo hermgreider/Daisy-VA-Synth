@@ -6,7 +6,7 @@
 #define WRITE_READ_SRAM_ADDR 0x20000000
 
 /* Defines ------------------------------------------------------------------*/
-#define VOICES_MAX 7
+#define VOICES_MAX 5
 #define FILTER_CUTOFF_MAX 18000.0f
 
 // play status
@@ -22,3 +22,11 @@
 #define MIDI_CHANNEL_ALL 17
 #define MIDI_VELOCITY_MAX 127
 extern uint8_t preset_number;
+
+// Reface Mode (Type Knob)
+#define OSC 0
+#define PERF 1
+#define VCF 2
+#define VCA 3
+#define LFOPWM 4
+#define ARP 5

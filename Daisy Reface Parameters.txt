@@ -1,0 +1,57 @@
+Editable Parameters:
+
+ (CC 80): Type Knob: Osc (Value 0), Filter (25), VCF (51), VCA (76), LFO/PWM (102), Effects (127)
+
+ Osc Type
+    Drive (81): Osc Mix 
+    Tremelo Depth (18): Osc1 Waveform: Tri (0), Saw (>40), Square (>80), PolyBLEP (>120)
+    Tremelo Rate (19): Osc2 Waveform: Tri (0), Saw (>40), Square (>80), PolyBLEP (>120)
+    Chorus Depth (86): Osc2 De-Tune
+    Chorus Speed (87): Osc2 Scale
+    Delay Depth (89): Osc1 PW 
+    Delay Time (90): Osc2 PW
+
+Performance Type
+    Drive (81): Mod Wheel (LFO Amp)
+    Tremelo Depth (18): Pitch Bend
+    Tremelo Rate (19): 
+    Chorus Depth (86): Cutoff
+    Chorus Speed (87): Resonance
+
+Filter Env
+    Drive (81): VCF Env amount
+    Tremelo Depth (18): VCF Attack
+    Tremelo Rate (19): VCF Decay
+    Tremelo Switch (17): Velocity Select
+    Chorus Depth (86): VCF Sustain
+    Chorus Speed (87): VCF Release
+    Delay Depth (89): VCF Key Follow Level
+    Delay Time (90): 
+    Reverb (91): 
+
+Amp Env Type
+    Drive (81): n/a
+    Tremelo Depth (18): VCA Attack
+    Tremelo Rate (19): VCA Decay
+    Chorus Depth (86): VCA Sustain
+    Chorus Speed (87): VCA Release
+    Delay Depth (89): Env Follow Level
+    Delay Time (90): 
+    Reverb (91): 
+
+LFO/PWM
+    Drive (81): VCA/VCF LFO rate
+    Tremelo Depth (18): VCA/VCF LFO Amp level
+    Tremelo Rate (19): VCA/VCF LFO Waveform Select
+    Chorus Depth (86): PWM LFO rate
+    Chorus Speed (87): PWM LFO amp level
+    Delay Depth (89): PWM2 LFO rate
+    Delay Time (90): PWM2 LFO amp level
+    Reverb (91): Mod Wheel LFO rate
+
+
+Need to implement???
+
+ (1): // Master Tuning
+ (20): // Velocity Routing Select
+
