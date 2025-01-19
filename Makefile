@@ -5,7 +5,7 @@ USE_DAISYSP_LGPL = 1
 LDFLAGS += -u _printf_float
 
 # Sources
-CPP_SOURCES = main.cpp vasynth.cpp synthui.cpp
+CPP_SOURCES = main.cpp synthui.cpp midihandlerreface.cpp vasynth.cpp 
 
 # Library Locations
 LIBDAISY_DIR = libDaisy

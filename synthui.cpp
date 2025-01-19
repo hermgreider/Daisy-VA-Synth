@@ -4,6 +4,7 @@
 
 #include "main.h"
 #include "vasynth.h"
+#include "midihandlerreface.h"
 #include "synthui.h"
 
 // using namespace std;

@@ -40,7 +40,7 @@
       "request": "launch",
       "runToMain": true,
       "servertype": "openocd",
-      "showDevDebugOutput": "vscode",
+      "showDevDebugOutput": "true",
       "svdFile": "${workspaceRoot}/.vscode/STM32H750x.svd",
       "type": "cortex-debug"
     }

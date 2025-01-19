@@ -2,6 +2,7 @@
 #include "daisysp.h"
 
 #include "main.h"
+#include "midihandlerreface.h"
 #include "vasynth.h"
 
 using namespace daisy;
