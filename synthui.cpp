@@ -47,9 +47,10 @@ void SynthUI::ConfigureOLED()
 {
    /** Configure the Display */
     MyOledDisplay::Config disp_cfg;
-    disp_cfg.driver_config.transport_config.pin_config.dc    = Pin(PORTB, 4); // hw.GetPin(9);
-    disp_cfg.driver_config.transport_config.pin_config.reset = Pin(PORTB, 15); // hw.GetPin(30);
+    disp_cfg.driver_config.transport_config.pin_config.dc    = Pin(PORTB, 4);
+    disp_cfg.driver_config.transport_config.pin_config.reset = Pin(PORTB, 15);
 
+    // I2C version - super slow
     // disp_cfg.driver_config.transport_config.i2c_address               = 0x3D; // man, this was hard to find!
     // disp_cfg.driver_config.transport_config.i2c_config.periph         = I2CHandle::Config::Peripheral::I2C_1;
     // disp_cfg.driver_config.transport_config.i2c_config.speed          = I2CHandle::Config::Speed::I2C_1MHZ;
