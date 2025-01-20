@@ -150,9 +150,9 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         vasynth.SetWaveform();
                     }
                     else if (reface_mode == PERF) {
-                        // Pitch Bend
-                        PitchBendEvent p = m.AsPitchBend();
-                        vasynth.PitchBend(p.value);    
+                        // Filter Cutoff
+                        vasynth.filter_cutoff_ = ((float)p.value * (18000.0f / 127.0f));
+                        vasynth.SetFilter();
                     }
                     else if (reface_mode == VCF) {
                         // VCF Attack
@@ -193,7 +193,9 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         vasynth.SetWaveform();
                     }
                     else if (reface_mode == PERF) {
-                        // Unused
+                        // Resonance
+                        vasynth.filter_res_ = ((float)p.value / 127.0f);
+                        vasynth.SetFilter();
                     }
                     else if (reface_mode == VCF) {
                         // VCF Decay
@@ -232,9 +234,9 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         vasynth.osc2_detune_ = ((float)p.value / 255.0f);
                     }
                     else if (reface_mode == PERF) {
-                        // Filter Cutoff
-                        vasynth.filter_cutoff_ = ((float)p.value * (18000.0f / 127.0f));
-                        vasynth.SetFilter();
+                        // Pitch Bend
+                        PitchBendEvent p = m.AsPitchBend();
+                        vasynth.PitchBend(p.value);    
                     }
                     else if (reface_mode == VCF) {
                         // VCF Sustain
@@ -262,9 +264,7 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         vasynth.osc2_transpose_ = (1.0f + ((float)p.value / 127.0f));
                     }
                     else if (reface_mode == PERF) {
-                        // Resonance
-                        vasynth.filter_res_ = ((float)p.value / 127.0f);
-                        vasynth.SetFilter();
+                        // Unused
                     }
                     else if (reface_mode == VCF) {
                         // VCF release

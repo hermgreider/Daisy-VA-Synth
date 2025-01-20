@@ -16,7 +16,9 @@ extern VASynth vasynth;
 extern uint8_t reface_mode;
 
 // OLED display
-using MyOledDisplay = OledDisplay<SSD1327I2c128x128Driver>;
+// using MyOledDisplay = OledDisplay<SSD1327I2c128x128Driver>;
+using MyOledDisplay = OledDisplay<SSD13274WireSpi128x128Driver>;
+
 MyOledDisplay display;
 
 // String mappings
@@ -45,12 +47,15 @@ void SynthUI::ConfigureOLED()
 {
    /** Configure the Display */
     MyOledDisplay::Config disp_cfg;
-    disp_cfg.driver_config.transport_config.i2c_address               = 0x3D; // man, this was hard to find!
-    disp_cfg.driver_config.transport_config.i2c_config.periph         = I2CHandle::Config::Peripheral::I2C_1;
-    disp_cfg.driver_config.transport_config.i2c_config.speed          = I2CHandle::Config::Speed::I2C_1MHZ;
-    disp_cfg.driver_config.transport_config.i2c_config.mode           = I2CHandle::Config::Mode::I2C_MASTER;
-    disp_cfg.driver_config.transport_config.i2c_config.pin_config.scl = Pin(PORTB, 8);  
-    disp_cfg.driver_config.transport_config.i2c_config.pin_config.sda = Pin(PORTB, 9);
+    disp_cfg.driver_config.transport_config.pin_config.dc    = Pin(PORTB, 4); // hw.GetPin(9);
+    disp_cfg.driver_config.transport_config.pin_config.reset = Pin(PORTB, 15); // hw.GetPin(30);
+
+    // disp_cfg.driver_config.transport_config.i2c_address               = 0x3D; // man, this was hard to find!
+    // disp_cfg.driver_config.transport_config.i2c_config.periph         = I2CHandle::Config::Peripheral::I2C_1;
+    // disp_cfg.driver_config.transport_config.i2c_config.speed          = I2CHandle::Config::Speed::I2C_1MHZ;
+    // disp_cfg.driver_config.transport_config.i2c_config.mode           = I2CHandle::Config::Mode::I2C_MASTER;
+    // disp_cfg.driver_config.transport_config.i2c_config.pin_config.scl = Pin(PORTB, 8);  
+    // disp_cfg.driver_config.transport_config.i2c_config.pin_config.sda = Pin(PORTB, 9);
 
     /** And Initialize */
     display.Init(disp_cfg);
@@ -74,16 +79,13 @@ uint32_t refresh_count = 0;
 void SynthUI::Refresh() 
 {
     uint32_t now = System::GetNow();
-    if (last_second + 1000 < now) {
+    if (last_second + 300 < now) {
     	last_second = now - (now % 1000);
 
         if (update_display == 0) {
             return;
         }
         update_display = 0;
-
-        // snprintf(buf, 200, "%ld\n", refresh_count++);
-        // WriteBuf(buf, 100, 0);
 
         if (reface_mode != current_reface_mode) {
             current_reface_mode = reface_mode;
@@ -110,9 +112,9 @@ void SynthUI::DrawUI()
     }
     else if (reface_mode == PERF) {
         WriteString("Mod", 12, 1);
-        WriteString("Pitch", 12, 2);
-        WriteString("Cutoff", 12, 3);
-        WriteString("Reso", 12, 4);
+        WriteString("Cutoff", 12, 2);
+        WriteString("Reso", 12, 3);
+        WriteString("Pitch", 12, 4);
     }
     else if (reface_mode == VCF) {
         WriteString("Amount", 12, 1);
@@ -176,47 +178,48 @@ void SynthUI::UpdateValues()
         snprintf(buf, 200, "%.3f\n", vasynth.lfo_amp_);
         WriteBuf(buf, 60, 1);
 
-        // Pitch
-
         snprintf(buf, 200, "%.3f\n", vasynth.filter_cutoff_);
-        WriteBuf(buf, 60, 3);
-
-        snprintf(buf, 200, "%.3f\n", vasynth.filter_res_);
-        WriteBuf(buf, 60, 4);
-    }
-    else if (reface_mode == VCF) {
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_f_amount_);
-        WriteBuf(buf, 60, 1);
-
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_f_attack_);
         WriteBuf(buf, 60, 2);
 
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_f_decay_);
+        snprintf(buf, 200, "%.3f\n", vasynth.filter_res_);
+        WriteBuf(buf, 60, 3);
+
+        // Pitch
+
+    }
+    else if (reface_mode == VCF) {
+        snprintf(buf, 200, "%3.1f %%\n", vasynth.eg_f_amount_*100.0);
+        WriteBuf(buf, 60, 1);
+
+        snprintf(buf, 200, "%3.0f ms\n", vasynth.eg_f_attack_*1000.0);
+        WriteBuf(buf, 60, 2);
+
+        snprintf(buf, 200, "%3.0f ms\n", vasynth.eg_f_decay_*1000.0);
         WriteBuf(buf, 60, 3);
 
         snprintf(buf, 200, "%s\n", (vasynth.vel_select_ >= 2) ? "on " : "off");
         WriteBuf(buf, 60, 4);
 
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_f_sustain_);
+        snprintf(buf, 200, "%3.0f ms\n", vasynth.eg_f_sustain_*1000.0);
         WriteBuf(buf, 60, 5);
 
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_f_release_);
+        snprintf(buf, 200, "%3.0f ms\n", vasynth.eg_f_release_*1000.0);
         WriteBuf(buf, 60, 6);
 
-        snprintf(buf, 200, "%.3f\n", vasynth.vcf_kbd_follow_);
+        snprintf(buf, 200, "%3.3f\n", vasynth.vcf_kbd_follow_);
         WriteBuf(buf, 60, 7);
     }
     else if (reface_mode == VCA) {
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_a_attack_);
+        snprintf(buf, 200, "%.0f ms\n", vasynth.eg_a_attack_*1000.0);
         WriteBuf(buf, 60, 2);
 
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_a_decay_);
+        snprintf(buf, 200, "%.0f ms\n", vasynth.eg_a_decay_*1000.0);
         WriteBuf(buf, 60, 3);
 
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_a_sustain_);
+        snprintf(buf, 200, "%.0f ms\n", vasynth.eg_a_sustain_*1000.0);
         WriteBuf(buf, 60, 4);
 
-        snprintf(buf, 200, "%.3f\n", vasynth.eg_a_release_);
+        snprintf(buf, 200, "%.0f ms\n", vasynth.eg_a_release_*1000.0);
         WriteBuf(buf, 60, 5);
 
         snprintf(buf, 200, "%.3f\n", vasynth.env_kbd_follow_);

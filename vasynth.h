@@ -10,6 +10,7 @@
 #define PRESET_MAX 2
 
 // waveforms
+#define WAVE_SIN 0
 #define WAVE_TRI 1
 #define WAVE_SAW 2
 #define WAVE_SQUARE 4
