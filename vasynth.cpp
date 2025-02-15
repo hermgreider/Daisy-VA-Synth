@@ -98,6 +98,17 @@ void VASynth::Init()
 		flt[i].Init(sample_rate_);
 		flt[i].SetFreq(filter_cutoff_);
 		flt[i].SetRes(filter_res_);
+
+		// Chorus
+		current_fx = 0;
+		// chorus.Init(sample_rate_);
+		// flanger.Init(sample_rate_);
+		// autowah.Init(sample_rate_);
+		// phaser.Init(sample_rate_);
+		
+		reverb.Init(sample_rate_);
+    	reverb.SetLpFreq(15000.0f);
+		reverb.SetFeedback(0.7f);
 	}
 
 	// lfo
@@ -298,12 +309,39 @@ void VASynth::Process(float *out_l, float *out_r)
 			flt[i].SetFreq(filter_cutoff_ * (env_f_out * eg_f_amount_) * (1.0f + vcavcflfo_out) * (1.0f - ((vcf_kbd_follow_ * follow[i]))));
 		}	
 		
-		filter_out += flt[i].Process(osc_out);
+		// filter_out += flt[i].Process(osc_out);
+		flt[i].Process(osc_out);
+		filter_out += flt[i].Low();
 	}
 
 	filter_out /= VOICES_MAX;
-
 	voice_out = filter_out;
+
+	switch(current_fx)
+	{
+		case 0:
+			break;
+		// case 1:
+		// 	voice_out = chorus.Process(voice_out);
+		// 	break;
+		// case 2:
+		// 	voice_out = flanger.Process(voice_out);
+		// 	break;
+		// case 3:
+		// 	voice_out = autowah.Process(voice_out);
+		// 	break;
+		// case 4:
+		// 	voice_out = phaser.Process(voice_out);
+		// 	break;
+		// case 5:
+		default:
+		    float wet1, wet2;
+	
+	        float send = voice_out * 0.6f;
+			reverb.Process(send, send, &wet1, &wet1);
+			voice_out = voice_out + wet1;
+			break;
+	}
 
 	// delay
 	delay_out = delay_.Read();

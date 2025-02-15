@@ -66,6 +66,7 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
     }
 }
 
+// For debug with Salae Logic Analyzer
 void configureUART() {
     UartHandler::Config config;
     config.baudrate = 9600 ;
@@ -85,6 +86,7 @@ int main(void)
     // init hardware
     hardware.Init(true); // true = boost to 480MHz
     hardware.SetAudioBlockSize(1);
+    hardware.StartLog();
 
     // configureUART();
 
@@ -111,6 +113,7 @@ int main(void)
     hardware.StartAudio(AudioCallback);
 
     synthUI.Init();
+    hardware.PrintLine("hello");
 
     // Loop forever
     for(;;)

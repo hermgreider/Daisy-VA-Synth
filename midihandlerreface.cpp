@@ -9,16 +9,25 @@ using namespace daisy;
 
 extern VASynth vasynth;
 extern SynthUI synthUI;
+extern DaisySeed hardware;
 
-MidiUsbHandler midi;
 uint8_t reface_mode = 0; // Osc (0), Performance (1), VCF (51), VCA (76), LFO/PWM (102), Effects (127)
+
+// MidiUsbHandler midi;
+MidiUartHandler midi;
+
+/** FIFO to hold messages as we're ready to print them */
+FIFO<MidiEvent, 128> event_log;
 
 void MidiHandlerReface::Init()
 {
-    MidiUsbHandler::Config midi_cfg;
-    midi_cfg.transport_config.periph = MidiUsbTransport::Config::INTERNAL;
-    midi.Init(midi_cfg);
+    // MidiUsbHandler::Config midi_config;
+    // midi_config.transport_config.periph = MidiUsbTransport::Config::INTERNAL;
 
+    MidiUartHandler::Config midi_config;
+
+    midi.Init(midi_config);
+    midi.StartReceive();
 }
 
 void MidiHandlerReface::Refresh()
@@ -27,6 +36,7 @@ void MidiHandlerReface::Refresh()
     midi.Listen();
     while(midi.HasEvents())
     {
+        hardware.PrintLine("Got one");
         HandleMidiMessage(midi.PopEvent());
     }    
 }
@@ -112,6 +122,26 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         // VCA/VCF LFO rate
                         vasynth.vcavcflfo_freq_ = ((float)p.value / 127.0f);
                         vasynth.SetVCAVCFLFO();
+                    }
+                    else if (reface_mode == ARP) {
+                        if (p.value < 5) {
+                            vasynth.current_fx = 0;
+                        }
+                        else if (p.value < 30) {
+                            vasynth.current_fx = 1;
+                        }
+                        else if (p.value < 55) {
+                            vasynth.current_fx = 2;
+                        }
+                        else if (p.value < 80) {
+                            vasynth.current_fx = 3;
+                        }
+                        else if (p.value < 105) {
+                            vasynth.current_fx = 4;
+                        }
+                        else {
+                            vasynth.current_fx = 5;
+                        }
                     }
 
                     synthUI.UpdateDisplay();

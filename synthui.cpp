@@ -24,6 +24,7 @@ MyOledDisplay display;
 // String mappings
 string reface_modes[] = { "Oscillators", "Performance", "VCF        ", "VCA        ", "LFOPWM     ", "Arpeggiator"};
 string waves[] = { "Tri   ", "Saw   ", "", "Square", "", "PSaw  " };
+string fx_states[] = { "None   ", "Chorus  ", "Flanger ", "Autowah  ", "Phaser  ", "Reverb  " };
 
 uint8_t current_reface_mode = 100;
 
@@ -145,11 +146,12 @@ void SynthUI::DrawUI()
         WriteString("Modrate", 12, 8);
     }
     else if (reface_mode == ARP) {
-        WriteString("BPM", 12, 1);
-        WriteString("Pattern", 12, 2);
-        WriteString("Octaves", 12, 3);
-        WriteString("Swing", 12, 4);
-        WriteString("Length", 12, 5);
+        WriteString("FX", 12, 2);
+        // WriteString("BPM", 12, 1);
+        // WriteString("Pattern", 12, 2);
+        // WriteString("Octaves", 12, 3);
+        // WriteString("Swing", 12, 4);
+        // WriteString("Length", 12, 5);
     }
 }
 
@@ -251,6 +253,9 @@ void SynthUI::UpdateValues()
         snprintf(buf, 200, "%.3f\n", vasynth.lfo_freq_);
         WriteBuf(buf, 70, 8);
 
+    }
+    else if (reface_mode == ARP) {
+        WriteString(fx_states[vasynth.current_fx], 60, 2);
     }
 }
 
