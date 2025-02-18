@@ -1,13 +1,11 @@
 #include "daisy_seed.h"
 #include "oled_ssd1327.h"
-#include <string>
 
 #include "main.h"
 #include "vasynth.h"
 #include "midihandlerreface.h"
 #include "synthui.h"
 
-// using namespace std;
 using namespace daisy;
 
 // globals
@@ -16,7 +14,6 @@ extern VASynth vasynth;
 extern uint8_t reface_mode;
 
 // OLED display
-// using MyOledDisplay = OledDisplay<SSD1327I2c128x128Driver>;
 using MyOledDisplay = OledDisplay<SSD13274WireSpi128x128Driver>;
 
 MyOledDisplay display;
@@ -46,18 +43,10 @@ void SynthUI::Init()
 
 void SynthUI::ConfigureOLED() 
 {
-   /** Configure the Display */
+    /** Configure the Display */
     MyOledDisplay::Config disp_cfg;
     disp_cfg.driver_config.transport_config.pin_config.dc    = Pin(PORTB, 4);
     disp_cfg.driver_config.transport_config.pin_config.reset = Pin(PORTB, 15);
-
-    // I2C version - super slow
-    // disp_cfg.driver_config.transport_config.i2c_address               = 0x3D; // man, this was hard to find!
-    // disp_cfg.driver_config.transport_config.i2c_config.periph         = I2CHandle::Config::Peripheral::I2C_1;
-    // disp_cfg.driver_config.transport_config.i2c_config.speed          = I2CHandle::Config::Speed::I2C_1MHZ;
-    // disp_cfg.driver_config.transport_config.i2c_config.mode           = I2CHandle::Config::Mode::I2C_MASTER;
-    // disp_cfg.driver_config.transport_config.i2c_config.pin_config.scl = Pin(PORTB, 8);  
-    // disp_cfg.driver_config.transport_config.i2c_config.pin_config.sda = Pin(PORTB, 9);
 
     /** And Initialize */
     display.Init(disp_cfg);

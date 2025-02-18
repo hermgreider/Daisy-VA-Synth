@@ -335,7 +335,7 @@ void VASynth::Process(float *out_l, float *out_r)
 		// 	break;
 		// case 5:
 		default:
-		    float wet1, wet2;
+		    float wet1;
 	
 	        float send = voice_out * 0.6f;
 			reverb.Process(send, send, &wet1, &wet1);

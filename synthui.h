@@ -2,7 +2,6 @@
 #ifndef SYNTHUI_H
 #define SYNTHUI_H
 
-// #include <string.h>
 #include "daisy_seed.h"
 
 using namespace std;

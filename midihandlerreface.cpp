@@ -7,25 +7,34 @@
 
 using namespace daisy;
 
+#define MIDI_UART
+// #define MIDI_USB
+
 extern VASynth vasynth;
 extern SynthUI synthUI;
 extern DaisySeed hardware;
 
 uint8_t reface_mode = 0; // Osc (0), Performance (1), VCF (51), VCA (76), LFO/PWM (102), Effects (127)
 
-// MidiUsbHandler midi;
+#ifdef MIDI_USB 
+MidiUsbHandler midi;
+#else
 MidiUartHandler midi;
+#endif
 
 /** FIFO to hold messages as we're ready to print them */
 FIFO<MidiEvent, 128> event_log;
 
 void MidiHandlerReface::Init()
 {
-    // MidiUsbHandler::Config midi_config;
-    // midi_config.transport_config.periph = MidiUsbTransport::Config::INTERNAL;
-
+    #ifdef MIDI_USB 
+    MidiUsbHandler::Config midi_config;
+    midi_config.transport_config.periph = MidiUsbTransport::Config::INTERNAL;
+    
+    #else
     MidiUartHandler::Config midi_config;
-
+    #endif
+    
     midi.Init(midi_config);
     midi.StartReceive();
 }

@@ -28,9 +28,6 @@ uint8_t param_;
 float pitch_bend = 1.0f;
 float master_tune = 0.0f;
 
-UartHandler         uart;
-char tx[201];
-
 // sound
 VASynth vasynth;
 uint8_t gPlay = PLAY_ON;
@@ -42,7 +39,6 @@ SynthUI synthUI;
 MidiHandlerReface midiHandler;
 
 // audio callback
-
 void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
                    AudioHandle::InterleavingOutputBuffer out,
                    size_t                                size)
@@ -66,20 +62,6 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
     }
 }
 
-// For debug with Salae Logic Analyzer
-void configureUART() {
-    UartHandler::Config config;
-    config.baudrate = 9600 ;
-    config.periph   = UartHandler::Config::Peripheral::USART_1;
-    config.stopbits      = UartHandler::Config::StopBits::BITS_1;
-    config.parity        = UartHandler::Config::Parity::NONE;
-    config.mode          = UartHandler::Config::Mode::TX_RX;
-    config.wordlength    = UartHandler::Config::WordLength::BITS_8;
-    config.pin_config.rx = Pin(PORTB, 7);  // (USART_1 RX) Daisy pin 15
-    config.pin_config.tx = Pin(PORTB, 6);  // (USART_1 TX) Daisy pin 14
-
-    uart.Init(config);
-}
 
 int main(void)
 {
@@ -87,8 +69,6 @@ int main(void)
     hardware.Init(true); // true = boost to 480MHz
     hardware.SetAudioBlockSize(1);
     hardware.StartLog();
-
-    // configureUART();
 
     sysSampleRate = hardware.AudioSampleRate();
     sysCallbackRate = hardware.AudioCallbackRate();
@@ -99,7 +79,7 @@ int main(void)
     // load the default patch
     vasynth.First(0);
 
-    // Initialize USB Midi 
+    // Initialize Midi 
     midiHandler.Init();
 
     // let everything settle
@@ -113,7 +93,6 @@ int main(void)
     hardware.StartAudio(AudioCallback);
 
     synthUI.Init();
-    hardware.PrintLine("hello");
 
     // Loop forever
     for(;;)
