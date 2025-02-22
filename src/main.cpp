@@ -13,6 +13,7 @@ Feel free to copy, modify, and improve this code to match your equipment and sou
 #include "vasynth.h"
 #include "synthui.h"
 #include "midihandlerreface.h"
+#include "arp/arp.h"
 
 using namespace daisy;
 using namespace daisysp;
@@ -37,6 +38,7 @@ DelayLine<float, DELAY_MAX> DSY_SDRAM_BSS delay_;
 
 SynthUI synthUI;
 MidiHandlerReface midiHandler;
+arpeggiator::Arp arp;
 
 // audio callback
 void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
@@ -68,7 +70,7 @@ int main(void)
     // init hardware
     hardware.Init(true); // true = boost to 480MHz
     hardware.SetAudioBlockSize(1);
-    hardware.StartLog();
+    // hardware.StartLog();
 
     sysSampleRate = hardware.AudioSampleRate();
     sysCallbackRate = hardware.AudioCallbackRate();
@@ -83,7 +85,7 @@ int main(void)
     midiHandler.Init();
 
     // let everything settle
-    System::Delay(100);
+    System::Delay(200);
     
     // Stereo simulator
     delay_.Init();
@@ -93,11 +95,13 @@ int main(void)
     hardware.StartAudio(AudioCallback);
 
     synthUI.Init();
+    arp.Init();
 
     // Loop forever
     for(;;)
     {
         midiHandler.Refresh();
+        arp.Refresh();
         synthUI.Refresh();
     }
 }

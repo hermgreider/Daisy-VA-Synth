@@ -3,6 +3,7 @@
 #include "main.h"
 #include "vasynth.h"
 #include "synthui.h"
+#include "arp/arp.h"
 #include "midihandlerreface.h"
 
 using namespace daisy;
@@ -13,6 +14,7 @@ using namespace daisy;
 extern VASynth vasynth;
 extern SynthUI synthUI;
 extern DaisySeed hardware;
+extern arpeggiator::Arp arp;
 
 uint8_t reface_mode = 0; // Osc (0), Performance (1), VCF (51), VCA (76), LFO/PWM (102), Effects (127)
 
@@ -45,7 +47,7 @@ void MidiHandlerReface::Refresh()
     midi.Listen();
     while(midi.HasEvents())
     {
-        hardware.PrintLine("Got one");
+        // hardware.PrintLine("Got one");
         HandleMidiMessage(midi.PopEvent());
     }    
 }
@@ -59,7 +61,11 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
         {
             NoteOnEvent p = m.AsNoteOn();
         
-            if ((vasynth.midi_channel_ == MIDI_CHANNEL_ALL) || (p.channel == vasynth.midi_channel_))
+            if (arp.Running()) {
+                arp.NewNoteEvent(m);
+            }
+
+            else if ((vasynth.midi_channel_ == MIDI_CHANNEL_ALL) || (p.channel == vasynth.midi_channel_))
             {
                 vasynth.NoteOn(p.note+1, p.velocity);
                 // hardware.SetLed(true);
@@ -70,7 +76,11 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
         {
             NoteOnEvent p = m.AsNoteOn();
 
-            if ((vasynth.midi_channel_ == MIDI_CHANNEL_ALL) || (p.channel == vasynth.midi_channel_))
+            if (arp.Running()) {
+                arp.NewNoteEvent(m);
+            }
+
+            else if ((vasynth.midi_channel_ == MIDI_CHANNEL_ALL) || (p.channel == vasynth.midi_channel_))
             {
                 vasynth.NoteOff(p.note+1);
                 // hardware.SetLed(false);
