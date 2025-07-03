@@ -102,13 +102,15 @@ void VASynth::Init()
 		// Chorus
 		current_fx = 0;
 		// chorus.Init(sample_rate_);
-		// flanger.Init(sample_rate_);
+		flanger.Init(sample_rate_);
+		flanger.SetDelay(1.0);
+		flanger.SetFeedback(0.7);
 		// autowah.Init(sample_rate_);
 		// phaser.Init(sample_rate_);
 		
-		reverb.Init(sample_rate_);
-    	reverb.SetLpFreq(15000.0f);
-		reverb.SetFeedback(0.7f);
+		// reverb.Init(sample_rate_);
+    	// reverb.SetLpFreq(15000.0f);
+		// reverb.SetFeedback(0.7f);
 	}
 
 	// lfo
@@ -311,7 +313,8 @@ void VASynth::Process(float *out_l, float *out_r)
 		
 		// filter_out += flt[i].Process(osc_out);
 		flt[i].Process(osc_out);
-		filter_out += flt[i].Low();
+		filter_out += (flt[i].Low() * 0.5f) + (flt[i].Band() * 0.3f) + (flt[i].High() * 0.2f);
+
 	}
 
 	filter_out /= VOICES_MAX;
@@ -338,7 +341,8 @@ void VASynth::Process(float *out_l, float *out_r)
 		    float wet1;
 	
 	        float send = voice_out * 0.6f;
-			reverb.Process(send, send, &wet1, &wet1);
+			wet1 = flanger.Process(send);
+			// reverb.Process(send, send, &wet1, &wet1);
 			voice_out = voice_out + wet1;
 			break;
 	}

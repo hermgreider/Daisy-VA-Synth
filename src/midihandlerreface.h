@@ -14,11 +14,12 @@ extern uint8_t preset_number;
 
 // Reface Mode (Type Knob)
 #define OSC 0
-#define PERF 1
-#define VCF 2
+#define VCF 1
+#define ENV 2
 #define VCA 3
 #define LFOPWM 4
-#define ARP 5
+#define FX 5
+#define ARP 6
 
 class MidiHandlerReface
 {

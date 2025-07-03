@@ -26,7 +26,9 @@ void Arp::Refresh()
 
             if (notes_.NumNotes() > 0) {
 
-                hardware.PrintLine("Starting sequence");
+                if (arp_debug) {
+                    hardware.PrintLine("Starting sequence");
+                }
 
                 // start on first note
                 start_new_sequence_ = true;
@@ -75,9 +77,11 @@ void Arp::Play()
 
         sequence_.Create(&notes_);
 
-        hardware.PrintLine("Arp: Created new sequence");
-        notes_.PrintNotes();
-        sequence_.PrintSequence();
+        if (arp_debug) {
+            hardware.PrintLine("Arp: Created new sequence");
+            notes_.PrintNotes();
+            sequence_.PrintSequence();
+        }
 
         if ((config_.pattern == UP) or (config_.pattern == UPDOWN) or (config_.pattern == RANDOM)) {
             current_play_note_ = 0;
@@ -90,14 +94,17 @@ void Arp::Play()
         }
     }
     
-    hardware.PrintLine("Arp: pattern: %d, current_play_note: %d, direction: %d", config_.pattern, current_play_note_, direction_);
+    if (arp_debug) {
+        hardware.PrintLine("Arp: pattern: %d, current_play_note: %d, direction: %d", config_.pattern, current_play_note_, direction_);
+    }
 
-    // TODO: Send to the vasynth
     PlayNote(sequence_.sequence_[current_play_note_]);
 
     current_play_note_ += direction_;
 
-    hardware.PrintLine("Arp: after play, current_play_note: %d, num sequence notes: %d", current_play_note_, sequence_.NumSequenceNotes());
+    if (arp_debug) {
+        hardware.PrintLine("Arp: after play, current_play_note: %d, num sequence notes: %d", current_play_note_, sequence_.NumSequenceNotes());
+    }
 
     if ((config_.pattern == UP or config_.pattern == RANDOM) && (current_play_note_ >= sequence_.NumSequenceNotes())) {
         start_new_sequence_ = 1;
@@ -113,7 +120,9 @@ void Arp::Play()
     }
 
     next_note_ms_ += ((60 * 1000) / config_.bpm);
-    hardware.PrintLine("next ms: %d", next_note_ms_);
+    if (arp_debug) {
+        hardware.PrintLine("next ms: %d", next_note_ms_);
+    }
 
     // # if (pmid_swing_current() == STRAIGHT) {
     // #     next_note_64 += 60000000 / notes_per_min;
@@ -132,9 +141,11 @@ void Arp::Play()
 // current_play_note is the index of the note to play
 void Arp::PlayNote(NoteOnEvent note) 
 { 
-    // TODO: Instead of sending to MIDI, call the synth
-    // self.output.send(message)
+    // TODO: Some good way to decouple from direct call?
     vasynth.NoteOn(note.note+1, note.velocity);
 
-    hardware.PrintLine("Arp: played %d", note.note);
+    if (arp_debug) {
+        hardware.PrintLine("Arp: played %d", note.note);
+    }
 }
+

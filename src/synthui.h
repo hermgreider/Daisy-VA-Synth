@@ -15,8 +15,10 @@ class SynthUI
 
 	void Init();
 	void ConfigureOLED();
-	void WriteString(string buf, uint8_t row, uint8_t col);
-	void WriteBuf(char * buf, uint8_t row, uint8_t col);
+	void WriteString(string str, uint8_t x, uint8_t y, FontDef font);
+	void WriteBuf(char * buf, uint8_t x, uint8_t y, FontDef font);
+	void WriteString(string str, uint8_t x, uint8_t y);
+	void WriteBuf(char * buf, uint8_t x, uint8_t y);
 	void Refresh();
 	void NoteOn(uint8_t note);
 	void NoteOff(uint8_t note);

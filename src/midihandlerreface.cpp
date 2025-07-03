@@ -16,7 +16,7 @@ extern SynthUI synthUI;
 extern DaisySeed hardware;
 extern arpeggiator::Arp arp;
 
-uint8_t reface_mode = 0; // Osc (0), Performance (1), VCF (51), VCA (76), LFO/PWM (102), Effects (127)
+uint8_t reface_mode = 1; // Osc (0), Performance (1), VCF (51), VCA (76), LFO/PWM (102), Effects (127)
 
 #ifdef MIDI_USB 
 MidiUsbHandler midi;
@@ -101,16 +101,16 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         reface_mode = OSC;
                     }
                     else if (p.value == 25) {
-                        reface_mode = PERF;
-                    }
-                    else if (p.value == 51) {
                         reface_mode = VCF;
                     }
+                    else if (p.value == 51) {
+                        reface_mode = ARP;
+                    }
                     else if (p.value == 76) {
-                        reface_mode = VCA;
+                        reface_mode = LFOPWM;
                     }
                     else if (p.value == 102) {
-                        reface_mode = LFOPWM;
+                        reface_mode = FX;
                     }
                     else if (p.value == 127) {
                         reface_mode = ARP;
@@ -125,11 +125,11 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         // Osc Mix
                         vasynth.osc_mix_ = ((float)p.value / 127.0f);
                     }
-                    else if (reface_mode == PERF) {
-                        // Mod Wheel (LFO Amp)
-                        vasynth.lfo_amp_ = ((float)p.value / 127.0f);
-                        vasynth.SetLFO();
-                    }
+                    // else if (reface_mode == PERF) {
+                    //     // Mod Wheel (LFO Amp)
+                    //     vasynth.lfo_amp_ = ((float)p.value / 127.0f);
+                    //     vasynth.SetLFO();
+                    // }
                     else if (reface_mode == VCF) {
                         // VCF Env amount
                         vasynth.eg_f_amount_ = ((float)p.value / 127.0f);
@@ -198,11 +198,11 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         }
                         vasynth.SetWaveform();
                     }
-                    else if (reface_mode == PERF) {
-                        // Filter Cutoff
-                        vasynth.filter_cutoff_ = ((float)p.value * (18000.0f / 127.0f));
-                        vasynth.SetFilter();
-                    }
+                    // else if (reface_mode == PERF) {
+                    //     // Filter Cutoff
+                    //     vasynth.filter_cutoff_ = ((float)p.value * (18000.0f / 127.0f));
+                    //     vasynth.SetFilter();
+                    // }
                     else if (reface_mode == VCF) {
                         // VCF Attack
                         vasynth.eg_f_attack_ = ((float)p.value / 127.0f);
@@ -241,11 +241,11 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         }
                         vasynth.SetWaveform();
                     }
-                    else if (reface_mode == PERF) {
-                        // Resonance
-                        vasynth.filter_res_ = ((float)p.value / 127.0f);
-                        vasynth.SetFilter();
-                    }
+                    // else if (reface_mode == PERF) {
+                    //     // Resonance
+                    //     vasynth.filter_res_ = ((float)p.value / 127.0f);
+                    //     vasynth.SetFilter();
+                    // }
                     else if (reface_mode == VCF) {
                         // VCF Decay
                         vasynth.eg_f_decay_ = ((float)p.value / 127.0f);
@@ -282,11 +282,11 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         // Osc2 De-Tune
                         vasynth.osc2_detune_ = ((float)p.value / 255.0f);
                     }
-                    else if (reface_mode == PERF) {
-                        // Pitch Bend
-                        PitchBendEvent p = m.AsPitchBend();
-                        vasynth.PitchBend(p.value);    
-                    }
+                    // else if (reface_mode == PERF) {
+                    //     // Pitch Bend
+                    //     PitchBendEvent p = m.AsPitchBend();
+                    //     vasynth.PitchBend(p.value);    
+                    // }
                     else if (reface_mode == VCF) {
                         // VCF Sustain
                         vasynth.eg_f_sustain_ = ((float)p.value / 127.0f);
@@ -312,9 +312,9 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         // Osc2 Scale
                         vasynth.osc2_transpose_ = (1.0f + ((float)p.value / 127.0f));
                     }
-                    else if (reface_mode == PERF) {
-                        // Unused
-                    }
+                    // else if (reface_mode == PERF) {
+                    //     // Unused
+                    // }
                     else if (reface_mode == VCF) {
                         // VCF release
                         vasynth.eg_f_release_ = ((float)p.value / 127.0f);
@@ -340,9 +340,9 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         // Osc1 PW
                         vasynth.osc_pw_ = ((float)p.value / 255.0f);
                     }
-                    else if (reface_mode == PERF) {
-                        // Unused
-                    }
+                    // else if (reface_mode == PERF) {
+                    //     // Unused
+                    // }
                     else if (reface_mode == VCF) {
                         // VCF Key Follow Level
                         vasynth.vcf_kbd_follow_= ((float)p.value / 127.0f);
@@ -366,9 +366,9 @@ void MidiHandlerReface::HandleMidiMessage(MidiEvent m)
                         // Osc2 PW
                         vasynth.osc2_pw_ = ((float)p.value / 255.0f);                    
                     }
-                    else if (reface_mode == PERF) {
-                        // Unused
-                    }
+                    // else if (reface_mode == PERF) {
+                    //     // Unused
+                    // }
                     else if (reface_mode == VCF) {
                         // Unused
                     }

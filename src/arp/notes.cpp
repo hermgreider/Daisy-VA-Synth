@@ -21,13 +21,17 @@ void Notes::NewNoteEvent(MidiEvent message)
         // Reface sends note_on with velocity 0 rather than note_off - handle same as note off
         if (noteon.velocity == 0) {
             RemoveNote(noteon.note);
-            hardware.PrintLine("Arp::Notes:note_on, removed message: %d", noteon.note);
+            if (arp_debug) {
+                hardware.PrintLine("Arp::Notes:note_on, removed message: %d", noteon.note);
+            }
         }
 
         else {
             // Add new note 
             InsertNote(noteon);
-            hardware.PrintLine("Arp::Notes:note_on saved message: %d", noteon.note);
+            if (arp_debug) {
+                hardware.PrintLine("Arp::Notes:note_on saved message: %d", noteon.note);
+            }
         }
     }
 
@@ -37,10 +41,14 @@ void Notes::NewNoteEvent(MidiEvent message)
 
         // Remove note from notes list
         RemoveNote(noteoff.note);
-        hardware.PrintLine("Arp::Notes:note_off, removed message: %d", noteoff.note);
+        if (arp_debug) {
+            hardware.PrintLine("Arp::Notes:note_off, removed message: %d", noteoff.note);
+        }
     }
 
-    PrintNotes();
+    if (arp_debug) {
+       PrintNotes();
+    }
 }
 
 void Notes::ClearNotes()

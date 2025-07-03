@@ -40,6 +40,7 @@ private:
     uint8_t swing_num = 0;
     uint32_t next_note_ms_ = 0;
     NoteOnEvent prev_note;
+
 };
 }
 

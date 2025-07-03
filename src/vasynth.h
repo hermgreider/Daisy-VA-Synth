@@ -161,14 +161,14 @@ class VASynth
 	Adsr eg_f_[VOICES_MAX];
 	Svf flt[VOICES_MAX];
 	// Biquad flt[VOICES_MAX];
-	// MoogLadder flt[VOICES_MAX];
+	// LadderFilter flt[VOICES_MAX];
 
 	uint8_t current_fx;
 	// Chorus chorus;
-	// Flanger flanger;
+	Flanger flanger;
 	// Autowah autowah;
 	// Phaser phaser;
-	ReverbSc reverb;
+	// ReverbSc reverb;
 };
 
 #endif
